@@ -10,6 +10,7 @@ a {
   top: 10px;
   right: 10px;
   padding: 0;
+  clip-path: circle(30px at 0px 0px);
 }
 #webcam_stream video {
   border: 2px solid #dcc;

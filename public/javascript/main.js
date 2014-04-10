@@ -5,10 +5,15 @@
 
   var cur_video_blob = null;
   var fb_instance;
+  var emotions = ["lol",":)",":("];
+  var mediaRecorder = null;
+  var recording_video = false;
+  var emoticon_start = -1;
 
   $(document).ready(function(){
     connect_to_chat_firebase();
     connect_webcam();
+    console.log($)
   });
 
   function connect_to_chat_firebase(){
@@ -48,14 +53,49 @@
 
     // bind submission box
     $("#submission input").keydown(function( event ) {
-      if (event.which == 13) {
-        if(has_emotions($(this).val())){
-          fb_instance_stream.push({m:username+": " +$(this).val(), v:cur_video_blob, c: my_color});
-        }else{
-          fb_instance_stream.push({m:username+": " +$(this).val(), c: my_color});
+      if (event.originalEvent.repeat) {
+        var last_bit_of_text = $(this).val().split(" ").pop();
+        if(has_emotions(last_bit_of_text)){
+          if (!recording_video) {
+            recording_video = true;
+            mediaRecorder.stop();
+            mediaRecorder.start(30000); //Max of thirty seconds
+          }
         }
-        $(this).val("");
-        scroll_to_bottom(0);
+      }
+    });
+    
+    var end_of_emoticon_index = null;
+
+    $("#submission input").keyup(function( event ) {
+      if(recording_video) {
+        console.log("i am here");
+        end_of_emoticon_index = $(this).val().length;
+        console.log($(this).val().length);
+        recording_video = false;
+        mediaRecorder.stop();
+
+      }
+      if (event.which == 13) {
+          if(cur_video_blob && has_emotions($(this).val())){
+            // for video element
+            var video_str = "<video><source type='video/webm' src='" + URL.createObjectURL(base64_to_blob(cur_video_blob)) + "'></source></video>";
+
+            console.log("start: " + emoticon_start);
+            console.log("end: " + end_of_emoticon_index);
+            var msg_content = "<span>" + $(this).val().substr(0, emoticon_start) + "</span>";
+            msg_content += video_str;
+            msg_content += "<span>" + $(this).val().substr(end_of_emoticon_index) + "</span>";
+
+            //Somehow need to take the emoticon bit out of the value, and replace it with a small version of the circular bit
+            fb_instance_stream.push({m:username+": " +msg_content, c: my_color});            
+
+            //Reset the video, so for plain emoticons like :), there's no video.
+            cur_video_blob = null;
+          }else{
+            fb_instance_stream.push({m:username+": " +$(this).val(), c: my_color});
+          }
+          $(this).val("");
       }
     });
 
@@ -65,26 +105,16 @@
 
   // creates a message node and appends it to the conversation
   function display_msg(data){
+    
     $("#conversation").append("<div class='msg' style='color:"+data.c+"'>"+data.m+"</div>");
-    if(data.v){
-      // for video element
-      var video = document.createElement("video");
-      video.autoplay = true;
-      video.controls = false; // optional
-      video.loop = true;
-      video.width = 120;
-
-      var source = document.createElement("source");
-      source.src =  URL.createObjectURL(base64_to_blob(data.v));
-      source.type =  "video/webm";
-
-      video.appendChild(source);
-
-      // for gif instead, use this code below and change mediaRecorder.mimeType in onMediaSuccess below
-      // var video = document.createElement("img");
-      // video.src = URL.createObjectURL(base64_to_blob(data.v));
-
-      document.getElementById("conversation").appendChild(video);
+    var conversation = document.getElementById('conversation');
+    var video_obj = conversation.getElementsByTagName('video');
+    if (video_obj.length > 0) {
+      video_obj = video_obj[0];
+      video_obj.autoplay = true;
+      video_obj.controls = false; // optional
+      video_obj.loop = true;
+      video_obj.width = 120;
     }
   }
 
@@ -129,7 +159,7 @@
 
       // now record stream in 5 seconds interval
       var video_container = document.getElementById('video_container');
-      var mediaRecorder = new MediaStreamRecorder(stream);
+      mediaRecorder = new MediaStreamRecorder(stream);
       var index = 1;
 
       mediaRecorder.mimeType = 'video/webm';
@@ -147,10 +177,11 @@
             cur_video_blob = b64_data;
           });
       };
-      setInterval( function() {
-        mediaRecorder.stop();
-        mediaRecorder.start(3000);
-      }, 3000 );
+      //This says record a new video every 3 seconds. And then it will call ondataava
+      // setInterval( function() {
+      //   mediaRecorder.stop();
+      //   mediaRecorder.start(3000);
+      // }, 3000 );
       console.log("connect to media stream!");
     }
 
@@ -165,9 +196,9 @@
 
   // check to see if a message qualifies to be replaced with video.
   var has_emotions = function(msg){
-    var options = ["lol",":)",":("];
-    for(var i=0;i<options.length;i++){
-      if(msg.indexOf(options[i])!= -1){
+    for(var i=0;i<emotions.length;i++){
+      if(msg.indexOf(emotions[i])!= -1){
+        emoticon_start = msg.indexOf(emotions[i]);
         return true;
       }
     }
