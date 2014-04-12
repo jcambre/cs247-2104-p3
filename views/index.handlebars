@@ -6,6 +6,13 @@
     <input type="text" placeholder="say something..">
   </div>
 
-  <div id="webcam_stream" style="-webkit-mask: url(images/mask.svg); -webkit-mask-position: 0% 0%; -webkit-mask-repeat: no-repeat;" ></div>
+  <div id="stream_wrapper">
+  	<div id="webcam_stream" style="-webkit-mask: url(images/mask.svg); -webkit-mask-position: 50% 50%; -webkit-mask-size: 70%; -webkit-mask-repeat: no-repeat;"></div>
+  </div>
 
-  <div id="video_container"></div>
+	<div id="video_stream_wrapper">
+	  <div id="video_container"></div>
+	  <span>-</span>
+	  <input id="zoom_slider" type="range" min="0" max="50" value="25" step="5" />
+	  <span>+</span>
+	</div>

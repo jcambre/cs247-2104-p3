@@ -3,6 +3,7 @@
 
 (function() {
 
+  var blobs = [];
   var cur_video_blob = null;
   var fb_instance;
   var emotions = ["lol",":)",":("];
@@ -10,10 +11,28 @@
   var recording_video = false;
   var emoticon_start = -1;
 
+  var DEFAULT_WIDTH = 160;
+  var DEFAULT_HEIGHT = 120;
+
+  var WIDTH = DEFAULT_WIDTH;
+  var HEIGHT = DEFAULT_HEIGHT;
+
   $(document).ready(function(){
     connect_to_chat_firebase();
     connect_webcam();
-    console.log($)
+    console.log($);
+
+    $("#zoom_slider").change(function() {
+      var relative_zoom_level = (100 - (25-this.value)) * .01;
+      HEIGHT = relative_zoom_level * DEFAULT_HEIGHT;
+      WIDTH = relative_zoom_level * DEFAULT_WIDTH;
+      console.log(relative_zoom_level * DEFAULT_HEIGHT);
+
+      var video = $("#webcam_stream").children().first('video');
+
+      video.videoWidth = WIDTH;
+      video.videoHeight = HEIGHT;
+    });
   });
 
   function connect_to_chat_firebase(){
@@ -60,6 +79,9 @@
             recording_video = true;
             mediaRecorder.stop();
             mediaRecorder.start(30000); //Max of thirty seconds
+            // Indicate to user that they're currently recording themselves
+            $("#stream_wrapper").addClass("recording");
+
           }
         }
       }
@@ -69,17 +91,22 @@
 
     $("#submission input").keyup(function( event ) {
       if(recording_video) {
-        console.log("i am here");
         end_of_emoticon_index = $(this).val().length;
         console.log($(this).val().length);
         recording_video = false;
         mediaRecorder.stop();
 
+        // Indicate to user that they're no longer being recorded
+        $("#stream_wrapper").removeClass("recording");
+
+        var blob = [cur_video_blob, emoticon_start, end_of_emoticon_index];
+        blobs.push(blob);
       }
       if (event.which == 13) {
           if(cur_video_blob && has_emotions($(this).val())){
             // for video element
-            var video_str = "<video><source type='video/webm' src='" + URL.createObjectURL(base64_to_blob(cur_video_blob)) + "'></source></video>";
+            var video_str = "<div class='videmoji_wrapper' style='-webkit-mask: url(images/mask.svg); -webkit-mask-position: 50% 50%; -webkit-mask-size: 70%; -webkit-mask-repeat: no-repeat; width: 160px; height: 120px; display: inline-block'>"
+            video_str += "<video><source type='video/webm' src='" + URL.createObjectURL(base64_to_blob(cur_video_blob)) + "'></source></video></div>";
 
             console.log("start: " + emoticon_start);
             console.log("end: " + end_of_emoticon_index);
@@ -90,11 +117,10 @@
             //Somehow need to take the emoticon bit out of the value, and replace it with a small version of the circular bit
             fb_instance_stream.push({m:username+": " +msg_content, c: my_color});            
 
-            //Reset the video, so for plain emoticons like :), there's no video.
-            cur_video_blob = null;
-          }else{
+          } else{
             fb_instance_stream.push({m:username+": " +$(this).val(), c: my_color});
           }
+          blobs = [];
           $(this).val("");
       }
     });
@@ -109,12 +135,39 @@
     $("#conversation").append("<div class='msg' style='color:"+data.c+"'>"+data.m+"</div>");
     var conversation = document.getElementById('conversation');
     var video_obj = conversation.getElementsByTagName('video');
-    if (video_obj.length > 0) {
-      video_obj = video_obj[0];
-      video_obj.autoplay = true;
-      video_obj.controls = false; // optional
-      video_obj.loop = true;
-      video_obj.width = 120;
+    for (var i=0; i<video_obj.length; i++) {
+      console.log(video_obj);
+      var curr_video = video_obj[i];
+      console.log("here: " + $(curr_video));
+
+
+      curr_video.autoplay = true;
+      curr_video.controls = false; // optional
+      curr_video.loop = true;
+      curr_video.width = WIDTH*0.4; //Shrunk down size
+      curr_video.height = HEIGHT*0.4; // shrunk down size
+
+      var emoji_wrapper_for_video = $(curr_video).parent(".videmoji_wrapper");
+      console.log("hereasdf");
+      console.log(emoji_wrapper_for_video);
+      emoji_wrapper_for_video.width(WIDTH*0.4);
+      emoji_wrapper_for_video.height(HEIGHT*0.4);
+
+      $(curr_video).hover(
+        function() {
+          //Display full size
+          curr_video.width = WIDTH;
+          curr_video.height = HEIGHT; 
+          emoji_wrapper_for_video.width(WIDTH);
+          emoji_wrapper_for_video.height(HEIGHT);
+        }, function() {
+          //Shrink Again
+          curr_video.width = WIDTH*0.4;
+          curr_video.height = HEIGHT*0.4; 
+          emoji_wrapper_for_video.width(WIDTH*0.4);
+          emoji_wrapper_for_video.height(HEIGHT*0.4);
+        }
+      );
     }
   }
 
@@ -135,8 +188,8 @@
     // callback for when we get video stream from user.
     var onMediaSuccess = function(stream) {
       // create video element, attach webcam stream to video element
-      var video_width= 160;
-      var video_height= 120;
+      var video_width= WIDTH;
+      var video_height= HEIGHT;
       var webcam_stream = document.getElementById('webcam_stream');
       var video = document.createElement('video');
       webcam_stream.innerHTML = "";
