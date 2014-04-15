@@ -1,18 +1,20 @@
-  <div>Welcome to {{title}}, enable camera to post video emoji!</div>
+  <div><h1>Welcome to {{title}}, enable camera to post video emoji!</h1></div>
   <div id="waiting">Connecting to chat server...</div>
   <div id="second_counter"></div>
   <div id="conversation"></div>
   <div id="submission">
-    <input type="text" placeholder="say something..">
+    <input id="submission_text" type="text" placeholder="Say something...">
   </div>
 
   <div id="stream_wrapper">
-  	<div id="webcam_stream" style="-webkit-mask: url(images/mask.svg); -webkit-mask-position: 50% 50%; -webkit-mask-size: 70%; -webkit-mask-repeat: no-repeat;"></div>
+  	<div id="webcam_stream" style="-webkit-mask: url(images/mask.svg); -webkit-mask-position: 50% 50%; -webkit-mask-size: 110px; -webkit-mask-repeat: no-repeat; position: relative;"></div>
+  	<img id="smile_position_guide" src="images/smile.svg" style="position:absolute; top: 20px; right: -13px; opacity: 0.5; display: none;">
   </div>
 
 	<div id="video_stream_wrapper">
 	  <div id="video_container"></div>
+	  <!--<br/><br/>
 	  <span>-</span>
-	  <input id="zoom_slider" type="range" min="0" max="50" value="25" step="5" />
-	  <span>+</span>
+	  <input id="zoom_slider" type="range" min="0" max="100" value="0" step="5" />
+	  <span>+</span> -->
 	</div>
