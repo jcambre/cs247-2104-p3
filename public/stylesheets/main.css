@@ -3,26 +3,24 @@ body {
   font: 15px 'Open Sans', Helvetica, Arial, sans-serif;
   color: #333;
 }
-
 #instructions {
-  font-size: 10pt;
+  font-size: 9pt;
   width: 200px;
   background-color: #333;
   border-radius: 5px;
   padding: 5px;
   color: #ffffff;
-  float: right;
+  position: absolute;
+  top: 200px;
+  right: 20px;
 }
-
 a {
   color: #00B7FF;
 }
-
 .expanded {
   top: -500px;
-  left: -500px; 
+  left: -500px;
 }
-
 #stream_wrapper {
   position: absolute;
   top: 10px;
@@ -31,14 +29,10 @@ a {
   background-image: url(images/mask.svg);
 }
 #stream_wrapper.recording {
-  -webkit-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58, 1.0));
-  -moz-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58, 1.0));
-  -ms-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58, 1.0));
-  -o-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58, 1.0));
-  -webkit-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58, 1.0));
-  -moz-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58, 1.0));
-  -ms-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58, 1.0));
-  -o-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58, 1.0));
+  -webkit-filter: drop-shadow(0px 0px 4px #c41e3a);
+  -moz-filter: drop-shadow(0px 0px 4px #c41e3a);
+  -ms-filter: drop-shadow(0px 0px 4px #c41e3a);
+  -o-filter: drop-shadow(0px 0px 4px #c41e3a);
 }
 #video_stream_wrapper {
   float: right;
@@ -85,14 +79,12 @@ a {
 .msg {
   padding-bottom: 10px;
 }
-
 .emoji_label {
   border-radius: 10px;
   padding: 3px 7px;
   font-weight: 700;
   color: #ffffff;
 }
-
 #webcam_stream {
   top: -50px;
   left: 80px;
