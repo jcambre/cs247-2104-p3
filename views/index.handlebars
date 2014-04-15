@@ -6,10 +6,23 @@
     <input id="submission_text" type="text" placeholder="Say something...">
   </div>
 
+
+  <div id="instructions">
+  <p><b>Supported Emoticons:</b></p>
+  lol&nbsp;&nbsp;&nbsp;&nbsp;:)&nbsp;&nbsp;&nbsp;&nbsp;:(&nbsp;&nbsp;&nbsp;&nbsp;-_-&nbsp;&nbsp;&nbsp;&nbsp;:D&nbsp;&nbsp;&nbsp;&nbsp;:P&nbsp;&nbsp;&nbsp;&nbsp;;)
+  <hr/>
+  <p><b>To record</b>, start typing the emoticon and keep pressing the final character in the emoticon in order to trigger the camera.<br/>
+  For example, type :)))))))))))))) by holding down the ")"</p>
+  <p>The recording will <b>stop</b> once you release the key. You should be able to see your videmoticon in place of the original once you send the message.</p>
+  <p><b>Note: </b>Any emoticons you enter with a single ending character will simply appear as normal emoticons</p>
+  <p>Also, make sure you're framed properly by hovering over the video stream above!</p>
+  </div>
+
   <div id="stream_wrapper">
   	<div id="webcam_stream" style="-webkit-mask: url(images/mask.svg); -webkit-mask-position: 50% 50%; -webkit-mask-size: 110px; -webkit-mask-repeat: no-repeat; position: relative;"></div>
   	<img id="smile_position_guide" src="images/smile.svg" style="position:absolute; top: 20px; right: -13px; opacity: 0.5; display: none;">
   </div>
+
 
 	<div id="video_stream_wrapper">
 	  <div id="video_container"></div>
