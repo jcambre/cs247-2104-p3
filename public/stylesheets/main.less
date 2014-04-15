@@ -1,10 +1,26 @@
 body {
   margin: 10px;
-  font: 15px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 15px 'Open Sans', Helvetica, Arial, sans-serif;
+  color: #333;
+}
+
+#instructions {
+  font-size: 10pt;
+  width: 200px;
+  background-color: #333;
+  border-radius: 5px;
+  padding: 5px;
+  color: #ffffff;
+  float: right;
 }
 
 a {
   color: #00B7FF;
+}
+
+.expanded {
+  top: -500px;
+  left: -500px; 
 }
 
 #stream_wrapper {
@@ -13,60 +29,71 @@ a {
   right: 10px;
   padding: 0;
   background-image: url(images/mask.svg);
-
 }
-
 #stream_wrapper.recording {
-    -webkit-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58,0.75));
-    -moz-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58,0.75));
-    -ms-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58,0.75));
-    -o-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58,0.75));
-  }
-
-#video_stream_wrapper{
+  -webkit-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58, 1.0));
+  -moz-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58, 1.0));
+  -ms-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58, 1.0));
+  -o-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58, 1.0));
+  -webkit-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58, 1.0));
+  -moz-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58, 1.0));
+  -ms-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58, 1.0));
+  -o-filter: drop-shadow(0px 0px 4px rgba(196, 30, 58, 1.0));
+}
+#video_stream_wrapper {
   float: right;
 }
-
-#second_counter{
+#second_counter {
   position: fixed;
   top: 20px;
   right: 20px;
   color: black;
   z-index: 999;
 }
-
-#conversation{
+#conversation {
   padding: 10px 10px 80px;
   overflow-y: scroll;
   height: 100%;
 }
-
-#submission{
+#submission {
   position: fixed;
   bottom: 0;
   width: 100%;
   right: 0;
   border-top: 2px solid #dcc;
   background: #fff;
-
-  input{
-    border: none;
-    font-size: 15px;
-    padding: 15px;
-    outline: none;
-    box-sizing: border-box;
-    width: 100%;
-  }
 }
-
-#waiting{
-  position:fixed;
-  height:100%;
-  width:100%;
+#submission input {
+  border: none;
+  font-size: 15px;
+  padding: 15px;
+  outline: none;
+  box-sizing: border-box;
+  width: 100%;
+}
+#waiting {
+  position: fixed;
+  height: 100%;
+  width: 100%;
   top: 0;
   left: 0;
   background: #292929;
-  color:white;
+  color: white;
   text-align: center;
   padding: 50px 0;
+}
+.msg {
+  padding-bottom: 10px;
+}
+
+.emoji_label {
+  border-radius: 10px;
+  padding: 3px 7px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+#webcam_stream {
+  top: -50px;
+  left: 80px;
 }

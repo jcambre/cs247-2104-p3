@@ -8,7 +8,7 @@
   var blobs = [];
   var cur_video_blob = null;
   var fb_instance;
-  var emotions = ["lol",":)",":("];
+  var emotions = ["lol",":)",":(", "-_-", ":D", ":P", ";)"];
   var mediaRecorder = null;
   var recording_video = false;
   var emoticon_start = -1;
