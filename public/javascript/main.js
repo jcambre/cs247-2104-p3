@@ -69,7 +69,7 @@
 
   function connect_to_chat_firebase(){
     /* Include your Firebase link here!*/
-    fb_instance = new Firebase("https://gsroth-p3-v1.firebaseio.com");
+    fb_instance = new Firebase("https://radiant-fire-5488.firebaseio.com/");
 
     // generate new chatroom id or use existing id
     var url_segments = document.location.href.split("/#");
@@ -131,39 +131,9 @@
         $("#stream_wrapper").removeClass("recording");
       }
       if (event.which == 13) {
-          if(blobs.length > 0){
-            // for video element
-            var video_str = "";
-            var msg_content = "";
-            var text = $(this).val();
-            var index = 0;
-            var orig_length = blobs.length;
-            
-            text = text.split(" "); // Split everything into chars
-            while(text.length > 0) {
-              var chunk = text.shift();
+          fb_instance_stream.push({videos:blobs, c:my_color, message:$(this).val(), username: username});
 
-              if (has_emotions(chunk, "")) {
-                var emoji = extract_emoji(chunk);
-                var blob = blobs.shift();
-                video_str += "<div class='another_wrapper' style='width: 50px; height:50px; position:relative; display:inline-block'><div class='videmoji_wrapper' style='position: absolute; -webkit-mask: url(images/mask.svg); -webkit-mask-position: 50% 50%; -webkit-mask-size: 30%; -webkit-mask-repeat: no-repeat; width: 160px; height: 120px; display: inline-block; top:-25px; left:-45px;'>"
-                video_str += "<video><source type='video/webm' src='" + URL.createObjectURL(base64_to_blob(blob[0])) + "'></source></video></div><div class='emoji_label' style='display:none; background-color:" + my_color + "; width: 15px; text-align: center;'>" + emoji + "</div></div>";
-                console.log(my_color);
-                msg_content += " " + video_str + " ";
-              } else {
-                msg_content += "<span> " + chunk + " <span>";
-              }
-               console.log("hey");             
-              video_str = "";
 
-            }
-
-            //Somehow need to take the emoticon bit out of the value, and replace it with a small version of the circular bit
-            fb_instance_stream.push({m: "<span style='color: " + my_color + "; font-weight: 700;'>" + username+"</span>: " +msg_content, c: my_color});            
-
-          } else{
-            fb_instance_stream.push({m: "<span style='color: " + my_color + "; font-weight: 700;'>" + username+"</span>: " +$(this).val(), c: my_color});            
-          }
           blobs = [];
           $(this).val("");
           wait_for_it();
@@ -176,8 +146,46 @@
 
   // creates a message node and appends it to the conversation
   function display_msg(data){
+    var msg = "";
+
+    if (data.m) {
+      msg = data.m;
+    } else {
+      var blobs_copy = data.videos;
+      if(blobs_copy && blobs_copy.length > 0){
+        // for video element
+        var video_str = "";
+        var msg_content = "";
+        var text = data.message;
+        var index = 0;
+        var orig_length = blobs_copy.length;
+        
+        text = text.split(" "); // Split everything into chars
+        while(text.length > 0) {
+          var chunk = text.shift();
+
+          if (has_emotions(chunk, "")) {
+            var emoji = extract_emoji(chunk);
+            var blob = blobs_copy.shift();
+            video_str += "<div class='another_wrapper' style='width: 50px; height:50px; position:relative; display:inline-block'><div class='videmoji_wrapper' style='position: absolute; -webkit-mask: url(images/mask.svg); -webkit-mask-position: 50% 50%; -webkit-mask-size: 30%; -webkit-mask-repeat: no-repeat; width: 160px; height: 120px; display: inline-block; top:-25px; left:-45px;'>"
+            video_str += "<video><source type='video/webm' src='" + URL.createObjectURL(base64_to_blob(blob[0])) + "'></source></video></div><div class='emoji_label' style='display:none; background-color:" + data.c + "; width: 15px; text-align: center;'>" + emoji + "</div></div>";
+            msg_content += " " + video_str + " ";
+          } else {
+            msg_content += "<span> " + chunk + " <span>";
+          }
+          video_str = "";
+
+        }
+        msg = "<span style='color: " + data.c + "; font-weight: 700;'>" + data.username+"</span>: " + msg_content;            
+
+      } else{
+        msg = "<span style='color: " + data.c + "; font-weight: 700;'>" + data.username+"</span>: " + data.message;            
+      }
+    }
     
-    $("#conversation").append("<div class='msg'>"+data.m+"</div>");
+
+
+    $("#conversation").append("<div class='msg'>"+msg+"</div>");
     var conversation = document.getElementById('conversation');
     var video_obj = conversation.getElementsByTagName('video');
     for (var i=0; i<video_obj.length; i++) {
