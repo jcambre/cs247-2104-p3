@@ -153,7 +153,7 @@
               } else {
                 msg_content += "<span> " + chunk + " <span>";
               }
-                            
+               console.log("hey");             
               video_str = "";
 
             }
